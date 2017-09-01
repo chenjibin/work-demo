@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="format-detection" content="telephone=no">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+    <title>翻牌抽奖</title>
+    <link href="./css/normalize.css" rel="stylesheet">
+    <link href="./css/common.css" rel="stylesheet">
+    <style>
+        .card-box {
+            width: 90%;
+            margin: 0 auto;
+            padding: 6px;
+            background-color: rgba(51, 136, 204, 0.41);
+        }
+        .card-wrapper {
+            padding: 2px;
+            position: relative;
+            z-index: 100;
+            -webkit-transition: all 0.8s ease-out;
+            -moz-transition: all 0.8s ease-out;
+            -ms-transition: all 0.8s ease-out;
+            -o-transition: all 0.8s ease-out;
+            transition: all 0.8s ease-out;
+        }
+        .card {
+            width: 100%;
+            position: relative;
+            perspective: 1000px;
+            -webkit-perspective: 1000px;
+            padding-top: 120%;
+        }
+        .card .face {
+            position: absolute;
+            left: 0;
+            top: 0;
+            border-radius: 4px;
+            -webkit-transition: all 1s cubic-bezier(0.68, 0.17, 0.57, 1.7);
+            -moz-transition: all 1s cubic-bezier(0.68, 0.17, 0.57, 1.7);
+            transition: all 1s cubic-bezier(0.68, 0.17, 0.57, 1.7);
+            backface-visibility: hidden;
+            -ms-backface-visibility: hidden;
+            -moz-backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            -o-backface-visibility: hidden;
+            background-color: #fff;
+            width: 100%;
+            height:100%;
+        }
+        .card .face.card-back {
+            transform: rotate3d(0,1,0,-180deg);
+            -ms-transform: rotate3d(0,1,0,-180deg);
+            -moz-transform: rotate3d(0,1,0,-180deg);
+            -webkit-transform: rotate3d(0,1,0,-180deg);
+            -o-transform: rotate3d(0,1,0,-180deg);
+            z-index: 8;
+            background-image: url('./images/bg_gift.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+        .card.flip .face.card-font {
+            transform: rotate3d(0,1,0,180deg);
+            -ms-transform: rotate3d(0,1,0,180deg);
+            -moz-transform: rotate3d(0,1,0,180deg);
+            -webkit-transform: rotate3d(0,1,0,180deg);
+            -o-transform: rotate3d(0,1,0,180deg);
+            z-index: 8;
+        }
+        .card.flip .face.card-back {
+            transform: rotate3d(0,1,0,0deg);
+            -ms-transform: rotate3d(0,1,0,0deg);
+            -moz-transform: rotate3d(0,1,0,0deg);
+            -webkit-transform: rotate3d(0,1,0,0deg);
+            -o-transform: rotate3d(0,1,0,0deg);
+            z-index: 10;
+        }
+
+        .card .face.card-font .img-wrapper{
+            padding: 0 12px;
+        }
+        .card .face.card-font .title {
+            padding: 6px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            text-align: center;
+        }
+        .btn-wrapper {
+            padding: 2px;
+            position: relative;
+            z-index: 90;
+        }
+        .start-btn {
+            width: 100%;
+            position: relative;
+            padding-top: 120%;
+        }
+        .start-btn .img-wrapper {
+            position: absolute;
+            left:0;
+            top:0;
+            width: 100%;
+            height: 100%;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="card-box fs-grid-three" ref="cardBox">
+        <div class="card-wrapper item" v-for="(item, index) in cardInfo" v-if="index !== 4">
+            <div class="card"   :class="{flip: item.isFlip}" @click="_cardClickHandler(item)">
+                <div class="face card-font">
+                    <div class="img-wrapper">
+                        <div class="fs-square-img">
+                            <img :src="item.picUrl" />
+                        </div>
+                    </div>
+                    <p class="title">{{item.title}}</p>
+                </div>
+                <div class="face card-back"></div>
+            </div>
+        </div>
+        <div class="btn-wrapper item" v-else>
+            <div class="start-btn"  @click="_startFlip">
+                <div class="img-wrapper">
+                    <div class="fs-square-img">
+                        <img :src="item.picUrl" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="./js/es5-shim.min.js"></script>
+<script src="./js/vue.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            cardInfo: [
+                {
+                    isFlip: false,
+                    picUrl: 'http://img2.xyyzi.com/Upload/images/20161021/5809c3152a128.jpg',
+                    title: '阿迪达斯板鞋'
+                },
+                {
+                    isFlip: false,
+                    picUrl: 'http://img2.xyyzi.com/Upload/images/20161021/5809c3152a128.jpg',
+                    title: '阿迪达斯板鞋'
+                },
+                {
+                    isFlip: false,
+                    picUrl: 'http://img2.xyyzi.com/Upload/images/20161021/5809c3152a128.jpg',
+                    title: '阿迪达斯板鞋'
+                },
+                {
+                    isFlip: false,
+                    picUrl: 'http://img2.xyyzi.com/Upload/images/20161021/5809c3152a128.jpg',
+                    title: '阿迪达斯板鞋'
+                },
+                {
+                    picUrl: 'http://img2.xyyzi.com/Upload/images/20161021/5809c3152a128.jpg'
+                },
+                {
+                    isFlip: false,
+                    picUrl: 'http://img2.xyyzi.com/Upload/images/20161021/5809c3152a128.jpg',
+                    title: '阿迪达斯板鞋'
+                },
+                {
+                    isFlip: false,
+                    picUrl: 'http://img2.xyyzi.com/Upload/images/20161021/5809c3152a128.jpg',
+                    title: '阿迪达斯板鞋'
+                },
+                {
+                    isFlip: false,
+                    picUrl: 'http://img2.xyyzi.com/Upload/images/20161021/5809c3152a128.jpg',
+                    title: '阿迪达斯板鞋'
+                },
+                {
+                    isFlip: false,
+                    picUrl: 'http://img2.xyyzi.com/Upload/images/20161021/5809c3152a128.jpg',
+                    title: '阿迪达斯板鞋'
+                }
+            ],
+            canFlip: false,
+            centerDot: []
+        },
+        created: function () {
+        },
+        mounted:function () {
+            var dom = this.$refs.cardBox.querySelector('.btn-wrapper');
+            var centerDot = [];
+            centerDot[0] = dom.offsetLeft;
+            centerDot[1] = dom.offsetTop;
+            this.centerDot = centerDot;
+        },
+        methods: {
+            _cardClickHandler: function (item) {
+                if (!this.canFlip) return;
+                item.isFlip = false;
+                this.canFlip = false
+            },
+            _startFlip: function () {
+                var that = this;
+                that._initCard().then(function () {
+                        return new Promise(function (resolve, reject) {
+                            setTimeout(function () {
+                                that._cardCollect();
+                                resolve()
+                            }, 1600)
+                        })
+                }).then(function () {
+                    setTimeout(function () {
+                        that._cardBack();
+                    }, 1600)
+                })
+            },
+            _initCard: function () {
+                var that = this;
+                return new Promise(function (resolve ,reject) {
+                    that.cardInfo.forEach(function (item) {
+                        item.isFlip = true
+                    });
+                    resolve()
+                })
+            },
+            _cardCollect: function () {
+                var that = this;
+                var arr = that.$refs.cardBox.querySelectorAll('.card-wrapper');
+                arr.forEach(function (item) {
+                    var al = item.offsetLeft;
+                    var at = item.offsetTop;
+                    var x = that.centerDot[0] - al + 'px';
+                    var y = that.centerDot[1] - at + 'px';
+                    item.style.transitionDelay = Math.random() * 0.5 + 's';
+                    item.style.webkitTransform  = 'translate3d(' + x + ',' + y + ',0)';
+                    item.style.transform = 'translate3d(' + x + ',' + y + ',0)'
+                })
+            },
+            _cardBack: function () {
+                var that = this;
+                var arr = this.$refs.cardBox.querySelectorAll('.card-wrapper');
+                arr.forEach(function (item) {
+                    item.style.transitionDelay = Math.random() * 0.5 + 's';
+                    item.style.webkitTransform  = null;
+                    item.style.transform = null
+                });
+                setTimeout(function () {
+                    that.canFlip = true;
+                }, 1500)
+            }
+        }
+    })
+</script>
+</body>
+</html>
