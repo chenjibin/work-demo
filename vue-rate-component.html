@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="format-detection" content="telephone=no">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+    <title>评论组件</title>
+    <link href="./css/font-awesome.min.css" rel="stylesheet">
+    <link href="./css/normalize.css" rel="stylesheet">
+    <link href="./css/common.css" rel="stylesheet">
+    <style>
+        .vue-rate-wrapper {
+
+        }
+        .vue-rate-wrapper .star {
+            color: #999;
+
+        }
+        .vue-rate-wrapper .star.active {
+            color: #ff0036;
+
+        }
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <fs-rate :rate="4" :full-point="5"></fs-rate>
+    <fs-rate :rate="4" :full-point="10" :open-click="true" @star-click="_setRate"></fs-rate>
+</div>
+
+<script src="./js/es5-shim.min.js"></script>
+<script src="./js/vue.min.js"></script>
+<script src="./js/vue-common-component.js"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        methods: {
+            _setRate: function (rate) {
+                console.log(rate)
+            }
+        }
+    })
+</script>
+</body>
+</html>

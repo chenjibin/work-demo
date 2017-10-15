@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="format-detection" content="telephone=no">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+    <title>商品详情</title>
+    <link href="./css/normalize.css" rel="stylesheet">
+    <link href="./css/common.css" rel="stylesheet">
+    <style>
+        .fs-new-phead {
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 100;
+            padding: 6px 0;
+            width: 100%;
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+        }
+        .bs-slide {
+            width: 100%;
+            height: 100%;
+            min-height: 1px;
+        }
+        .bs-slide .dots {
+            position: absolute;
+            right: 0;
+            left: 0;
+            bottom: 12px;
+            -webkit-transform: translateZ(1px);
+            transform: translateZ(1px);
+            text-align: center;
+            font-size: 0;
+        }
+        .bs-slide .dots .dot {
+            display: inline-block;
+            margin: 0 4px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ccc;
+            -webkit-transition: all 0.3s ease;
+            -moz-transition: all 0.3s ease;
+            -ms-transition: all 0.3s ease;
+            -o-transition: all 0.3s ease;
+            transition: all 0.3s ease;
+        }
+        .bs-slide .dots .dot.active {
+            width: 20px;
+            border-radius: 5px;
+            background: #fff;
+        }
+
+        .bs-slide > .slide-group {
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .bs-slide > .slide-group .slide-item {
+            float: left;
+            box-sizing: border-box;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .bs-slide.page > .slide-group {
+            height: 100%;
+            position: relative;
+        }
+
+        .bs-slide.page > .slide-group > .slide-item {
+            position: relative;
+            height: 100%;
+
+        }
+        .top-item-btn-wrapper {
+            width: 180px;
+            margin: 0 auto;
+        }
+        .top-item-btn-wrapper .top-item-btn {
+            padding: 6px;
+            font-size: 14px;
+            text-align: center;
+            font-weight: 700;
+            color: #666;
+        }
+
+        .top-item-btn-wrapper .top-item-btn.active {
+            color: #dc0707;
+        }
+        .product-main-content {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            z-index: 100;
+            width: 100%;
+            background-color: #ddd;
+        }
+        .product-main-content .inner {
+            background-color: #fff;
+            min-height: calc(100% + 500px);
+        }
+    </style>
+</head>
+<body>
+<div id="app" style="width: 100%;height: 100%;">
+    <div class="fs-new-phead" ref="newphead" v-show="headStatus.show">
+        <ul class="fs-grid-three top-item-btn-wrapper">
+            <li v-for="(item, index) in itemData"
+                class="top-item-btn item"
+                @click="_itemClickHandler(index)"
+                :class="{'active': index === activeIndex}">
+                <span>{{item}}</span>
+            </li>
+        </ul>
+    </div>
+    <bs-scroll class="page bs-slide"
+               :auto-play="false"
+               :loop="false"
+               :show-dot="false"
+               :is-end-scroll-start="true"
+               @scroll-end="_pageScrollEndHandler"
+               ref="pageScroll">
+        <div>
+            <bs-scroll class="bs-swiper"
+                       style="position: relative;"
+                       :auto-play="false"
+                       :is-before-scroll-start="true"
+                       :is-end-scroll-start="true"
+                       ref="swiperW"
+                       @before-scroll-start="_slideScrollStartHandler"
+                       @scroll-end="_slideScrollEndHandler">
+                <div class="">
+                    <div class="fs-square-img" ref="blockHeight">
+                        <img src="./images/59c7ce205bf6f.jpg" />
+                    </div>
+                </div>
+                <div class="">
+                    <div class="fs-square-img" ref="blockHeight">
+                        <img src="./images/59c7ce222f5ba.jpg" />
+                    </div>
+                </div>
+                <div class="">
+                    <div class="fs-square-img">
+                        <img src="./images/59c7ce2412923.jpg" />
+                    </div>
+                </div>
+                <div class="">
+                    <div class="fs-square-img">
+                        <img src="./images/59c7ce2412923.jpg" />
+                    </div>
+                </div>
+            </bs-scroll>
+            <div class="fs-scroll-view product-main-content" ref="productMain">
+                <div class="inner">
+
+                </div>
+            </div>
+        </div>
+        <div class="flex-box flex-center">
+            2
+        </div>
+        <div class="flex-box flex-center">
+            3
+        </div>
+    </bs-scroll>
+</div>
+<script src="./js/es5-shim.min.js"></script>
+<script src="./js/fastclick.js"></script>
+<script src="./js/bscroll.min.js"></script>
+<script src="./js/vue.min.js"></script>
+<script src="./js/jquery-3.1.0.min.js"></script>
+<script src="./js/vue-common-component.js"></script>
+<script>
+    if ('addEventListener' in document) {
+        document.addEventListener('DOMContentLoaded', function () {
+            FastClick.attach(document.body);
+        }, false);
+    }
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            itemData: ['商品', '详情', '评价'],
+            pageClick: false,
+            activeIndex: 0,
+            viewScrollY: 0,
+            mainScrollFlag: true,
+            headStatus: {
+                show: false
+            },
+            headKeepStatus: {
+                show: false,
+                opacity: 0
+            }
+        },
+        created: function () {
+
+        },
+        mounted: function () {
+            var that = this;
+            setTimeout(function () {
+                that._initScroll()
+            }, 20);
+            this._setScrollViewTop();
+        },
+        watch: {
+            'viewScrollY': function (y) {
+                if(!this.mainScrollFlag) return;
+
+                var radio = 1 / (this.bHeight - 41);
+                var opacity = (-y.toFixed(0) * radio).toFixed(2);
+
+                opacity = opacity >= 1 ? 1 : opacity;
+                opacity = opacity <= 0 ? 0 : opacity;
+
+                this.$refs.newphead.style.opacity = opacity;
+
+                this.$refs.swiperW.$el.style['transform'] = 'translate3d(0,' + y.toFixed(0) / 2 +'px,0)';
+                console.log('translate3d(0,' + y.toFixed(0) +',0)')
+
+                this.headStatus.show =  opacity !== 0;
+
+                this.headKeepStatus.opacity = opacity;
+                this.headKeepStatus.show =  opacity !== 0;
+            }
+        },
+        methods: {
+            _slideScrollStartHandler: function () {
+                this.$refs.pageScroll.slide.disable()
+            },
+            _slideScrollEndHandler: function () {
+                this.$refs.pageScroll.slide.enable()
+            },
+            _pageScrollEndHandler: function () {
+                var page = this.$refs.pageScroll.slide.getCurrentPage().pageX;
+                if(page !== 0) {
+                    this.mainScrollFlag = false;
+                    this.headStatus.show = true;
+                    this.$refs.newphead.style.opacity = 1
+                } else {
+                    this.mainScrollFlag = true;
+                    this.headStatus.show = this.headKeepStatus.show
+                    this.$refs.newphead.style.opacity = this.headKeepStatus.opacity;
+                }
+
+                this.activeIndex = page
+            },
+            _setScrollViewTop: function () {
+               this.bHeight = this.$refs.blockHeight.clientHeight;
+                console.log(this.$refs.blockHeight)
+                this.$refs.productMain.style.top = this.bHeight + 'px';
+            },
+            _initScroll: function () {
+                this.$refs.newphead.style.opacity = 0;
+                var options = {
+                    probeType: 3,
+                    click: false,
+                    tap: true
+                };
+                this.newScroll = new BScroll(this.$refs.productMain, options);
+                this.newScroll.on('scroll', function (e) {
+                    this.viewScrollY = e.y;
+                }.bind(this))
+            },
+            _toPage: function (index) {
+                this.$refs.pageScroll.slide.goToPage(index, -1)
+            },
+            _itemClickHandler: function (index) {
+                this.activeIndex = index;
+                this._toPage(index)
+            }
+        }
+    })
+</script>
+</body>
+</html>

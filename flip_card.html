@@ -137,8 +137,14 @@
     </div>
 </div>
 <script src="./js/es5-shim.min.js"></script>
+<script src="./js/fastclick.js"></script>
 <script src="./js/vue.min.js"></script>
 <script>
+    if ('addEventListener' in document) {
+        document.addEventListener('DOMContentLoaded', function() {
+            FastClick.attach(document.body);
+        }, false);
+    }
     var app = new Vue({
         el: '#app',
         data: {
@@ -187,12 +193,14 @@
                     title: '阿迪达斯板鞋'
                 }
             ],
+            nowFlipNum: 0,
+            canFlipNum: 3,
             canFlip: false,
             centerDot: []
         },
-        created: function () {
+        created: function() {
         },
-        mounted:function () {
+        mounted:function() {
             var dom = this.$refs.cardBox.querySelector('.btn-wrapper');
             var centerDot = [];
             centerDot[0] = dom.offsetLeft;
@@ -200,36 +208,40 @@
             this.centerDot = centerDot;
         },
         methods: {
-            _cardClickHandler: function (item) {
-                if (!this.canFlip) return;
-                item.isFlip = false;
-                this.canFlip = false
+            _cardClickHandler: function(item) {
+                if (!this.canFlip || !item.isFlip) return;
+                var flag = this.nowFlipNum < this.canFlipNum;
+                if (flag) {
+                    item.isFlip = false;
+                    this.nowFlipNum += 1;
+                }
             },
-            _startFlip: function () {
+            _startFlip: function() {
                 var that = this;
+                that.canFlip = false;
                 that._initCard().then(function () {
-                        return new Promise(function (resolve, reject) {
+                        return new Promise(function(resolve, reject) {
                             setTimeout(function () {
                                 that._cardCollect();
                                 resolve()
                             }, 1600)
                         })
-                }).then(function () {
-                    setTimeout(function () {
+                }).then(function() {
+                    setTimeout(function() {
                         that._cardBack();
                     }, 1600)
                 })
             },
-            _initCard: function () {
+            _initCard: function() {
                 var that = this;
-                return new Promise(function (resolve ,reject) {
+                return new Promise(function(resolve ,reject) {
                     that.cardInfo.forEach(function (item) {
                         item.isFlip = true
                     });
                     resolve()
                 })
             },
-            _cardCollect: function () {
+            _cardCollect: function() {
                 var that = this;
                 var arr = that.$refs.cardBox.querySelectorAll('.card-wrapper');
                 arr.forEach(function (item) {
@@ -237,12 +249,12 @@
                     var at = item.offsetTop;
                     var x = that.centerDot[0] - al + 'px';
                     var y = that.centerDot[1] - at + 'px';
-                    item.style.transitionDelay = Math.random() * 0.5 + 's';
                     item.style.webkitTransform  = 'translate3d(' + x + ',' + y + ',0)';
+                    item.style.transitionDelay = Math.random() * 0.5 + 's';
                     item.style.transform = 'translate3d(' + x + ',' + y + ',0)'
                 })
             },
-            _cardBack: function () {
+            _cardBack: function() {
                 var that = this;
                 var arr = this.$refs.cardBox.querySelectorAll('.card-wrapper');
                 arr.forEach(function (item) {
@@ -250,7 +262,7 @@
                     item.style.webkitTransform  = null;
                     item.style.transform = null
                 });
-                setTimeout(function () {
+                setTimeout(function() {
                     that.canFlip = true;
                 }, 1500)
             }
