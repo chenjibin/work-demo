@@ -29,11 +29,11 @@ Turnplate.prototype = {
 		  	ctx.clearRect(0,0,turnplate.turnplateRadius,turnplate.turnplateRadius);
 		  	ctx.strokeStyle = "#fff";
 		  	ctx.font = '14px Microsoft YaHei';
-			var eachAngle = parseFloat(360 / (turnplate.awardList.length))
+			this.eachAngle = parseFloat(360 / (turnplate.awardList.length))
 		 	for(var i = 0; i < turnplate.awardList.length; i++) {
 				var awardItem = turnplate.awardList[i];
-				var angle = (turnplate.startAngle + eachAngle * i) * Math.PI / 180;
-				var endAngle = (turnplate.startAngle + eachAngle * (i + 1)) * Math.PI / 180;
+				var angle = (turnplate.startAngle + this.eachAngle * i) * Math.PI / 180;
+				var endAngle = (turnplate.startAngle + this.eachAngle * (i + 1)) * Math.PI / 180;
 			  	ctx.fillStyle = awardItem.background || "#fff";
 			  	ctx.beginPath();
 			  	ctx.arc(centerPos, centerPos, turnplate.outsideRadius, angle, endAngle, false);    
@@ -67,9 +67,9 @@ Turnplate.prototype = {
 		  	}     
 	  	}
 	},
-	rotateFn: function (award,callback){
+	rotateFn: function (index,callback){
 		
-		var angles = parseFloat(award.endAngel + award.startAngel)/2 ;
+		var angles = parseFloat(this.eachAngle * index + this.eachAngle * (index + 1))/2 ;
 		angles += parseFloat(this.turnplate.startAngle);
 		if(angles<270){
 			angles = 270 - angles; 
@@ -79,8 +79,8 @@ Turnplate.prototype = {
 		this.wheelcanvas.stopRotate();
 		this.wheelcanvas.rotate({
 			angle:0,
-			animateTo:angles+1800,
-			duration:5000,
+			animateTo: angles + 3600,
+			duration: 8000,
 			callback: function(){
 				if (typeof callback === "function"){
 					callback();

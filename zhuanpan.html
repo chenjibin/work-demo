@@ -47,7 +47,7 @@
     <div class="turntable">
         <div class="turnplate">
             <canvas id="wheelcanvas" width="422px" height="422px"></canvas>
-            <img class="pointer" @click="_startAward" src="images/turnplate-pointer.png"/>
+            <img class="pointer" @click="_startAward(0)" src="images/turnplate-pointer.png"/>
         </div>
     </div>
 </div>
@@ -60,6 +60,7 @@
     var app = new Vue({
         el: '#app',
         data: {
+            startFlag: true,
             turnplateConfig: {
                 canvasID: "wheelcanvas",
                 awardList:[],               //大转盘奖品名称
@@ -113,9 +114,12 @@
             this.turnplate.init();
         },
         methods: {
-            _startAward: function () {
-                this.turnplate.rotateFn(this.turnplateConfig.awardList[1],function(){
-                    alert(this.turnplateConfig.awardList[1].title);
+            _startAward: function (index) {
+                if(!this.startFlag) return
+                this.startFlag = false
+                this.turnplate.rotateFn(index,function(){
+                    alert(this.turnplateConfig.awardList[index].title);
+                    this.startFlag = true
                 }.bind(this));
             }
         }
