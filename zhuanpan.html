@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="format-detection" content="telephone=no">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+    <link href="./css/font-awesome.min.css" rel="stylesheet">
+    <link href="./css/normalize.css" rel="stylesheet">
+    <link href="./css/common.css" rel="stylesheet">
+    <title>大转盘</title>
+    <style>
+        .turntable{
+            display:block;
+            width:95%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .turntable .turnplate{
+            display:block;
+            width:100%;
+            position:relative;
+            background-image:url(./images/turnplate-bg.png);
+            background-size:100% 100%;
+        }
+        .turntable .turnplate canvas{
+            width:100%;
+        }
+        .turntable .turnplate img.pointer{
+            position:absolute;
+            width: 42.5%;
+            height: 42.5%;
+            left: 28.9%;
+            top: 29.1%;
+        }
+        .hide {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <!--转盘显示图片-->
+    <img src="./images/sorry.png" id="sorry" class="hide" />
+    <img src="./images/iphone.jpg" id="iphone" class="hide" />
+    <!--转盘区域-->
+    <div class="turntable">
+        <div class="turnplate">
+            <canvas id="wheelcanvas" width="422px" height="422px"></canvas>
+            <img class="pointer" @click="_startAward" src="images/turnplate-pointer.png"/>
+        </div>
+    </div>
+</div>
+<script src="./js/es5-shim.min.js"></script>
+<script src="./js/vue.min.js"></script>
+<script src="./js/jquery-3.1.0.min.js"></script>
+<script src="./js/jquery.rotate.js"></script>
+<script src="./js/turnplate.js"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            turnplateConfig: {
+                canvasID: "wheelcanvas",
+                awardList:[],               //大转盘奖品名称
+                awardColor:"#E5302F",       //大转盘奖项文字颜色
+                turnplateRadius: 422,       //大转盘半径
+                outsideRadius:192,          //大转盘外圆的半径
+                insideRadius:68,            //大转盘内圆的半径
+                textRadius:155,             //大转盘奖品位置距离圆心的距离
+                startAngle: 0,               //开始角度
+                showAwardName: true,        //是否显示奖项名字
+                showAwardImg: true         //是否显示奖项图片
+            }
+        },
+        created: function () {
+            this.turnplateConfig.awardList = [
+                {
+                    title:"谢谢参与",
+                    icon: 'sorry',
+                    background:"#CCFFCC"
+                },
+                {
+                    title:"三等奖",
+                    name:"限量周边玩偶",
+                    background:"#FFF4D6"
+                },
+                {
+                    title:"二等奖",
+                    name: "海尔洗衣机",
+                    background:"#CCFFFF"
+                },
+                {
+                    title: "一等奖",
+                    name: "iPhone7 Plus",
+                    icon:'iphone',
+                    background:"#FFFFCC"
+                },
+                {
+                    title:"谢谢参与",
+                    icon: 'sorry',
+                    background:"#CCFFCC"
+                },
+                {
+                    title:"三等奖",
+                    name:"限量周边玩偶",
+                    background:"#FFF4D6"
+                }
+            ]
+        },
+        mounted: function () {
+            this.turnplate = new Turnplate(this.turnplateConfig);
+            this.turnplate.init();
+        },
+        methods: {
+            _startAward: function () {
+                this.turnplate.rotateFn(this.turnplateConfig.awardList[1],function(){
+                    alert(this.turnplateConfig.awardList[1].title);
+                }.bind(this));
+            }
+        }
+    })
+</script>
+</body>
+</html>
